@@ -1,6 +1,7 @@
 package ch.zli.chatter;
 /* Disclaimer:
  * Der Code in diesem .java-File ist entstanden beim befolgen eines offiziellen Firebase-Android Codelab, und gleicht diesem deshalb stark
+ * Es wurden einige kleine Anpassungen gemacht und sonst ist der grösste Unterschied, dass das Codelab Kotlin benützt, dieses Projekt hingegen Java
  *
  * Das betreffende Tutorial ist verfügbar unter https://firebase.google.com/codelabs/firebase-android,
  * der dazugehörige Source-Code ist verfügbar unter https://github.com/firebase/codelab-friendlychat-android
@@ -12,17 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import ch.zli.chatter.R;
 import ch.zli.chatter.databinding.ActivityMainBinding;
 import ch.zli.chatter.model.Message;
-
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -60,15 +65,17 @@ public class MainActivity extends AppCompatActivity {
         // The FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         // See: https://github.com/firebase/FirebaseUI-Android
 
-        FirebaseRecyclerOptions options = FirebaseRecyclerOptions.Builder<Message>()
+        FirebaseRecyclerOptions<Message> options =
+                new FirebaseRecyclerOptions.Builder<Message>()
                 .setQuery(messagesRef, Message.class)
                 .build();
+
         adapter = new ChatMessageAdapter(options, getUserName());
         binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
         manager = new LinearLayoutManager(this);
         manager.setStackFromEnd(true);
-        binding.messageRecyclerView.layoutManager = manager;
-        binding.messageRecyclerView.adapter = adapter;
+        binding.messageRecyclerView.setLayoutManager(manager);
+        binding.messageRecyclerView.setAdapter(adapter);
 
         // Scroll down when a new message arrives
         // See MyScrollToBottomObserver for details
@@ -81,16 +88,21 @@ public class MainActivity extends AppCompatActivity {
         binding.messageEditText.addTextChangedListener(new ButtonObserver(binding.sendButton));
 
         // When the send button is clicked, send a text message
-        binding.sendButton.setOnClickListener {
-            Message message = new Message(
-                    binding.messageEditText.getText().toString(),
-                    getUserName(),
-                    getPhotoUrl(),
-                    null
-            );
-            db.getReference().child(MESSAGES_CHILD).push().setValue(message);
-            binding.messageEditText.setText("");
-        }
+        View.OnClickListener btnClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message(
+                        binding.messageEditText.getText().toString(),
+                        getUserName(),
+                        null
+                );
+                db.getReference().child(MESSAGES_CHILD).push().setValue(message);
+                binding.messageEditText.setText("");
+
+            }
+        };
+
+        binding.sendButton.setOnClickListener(btnClick);
 
     }
 
@@ -102,5 +114,48 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+    }
+
+    @Override
+    public void onPause() {
+        adapter.stopListening();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.startListening();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sign_out_menu ) {
+            signOut();
+            return true;
+        }
+        else{
+            return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void signOut() {
+        AuthUI.getInstance().signOut(this);
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
+    }
+
+    private String getUserName() {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            return user.getDisplayName();
+        } else return ANONYMOUS;
     }
 }
