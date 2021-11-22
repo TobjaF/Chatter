@@ -10,7 +10,6 @@ public class ScrollToBottomObserver extends AdapterDataObserver{
     private ChatMessageAdapter adapter;
     private LinearLayoutManager manager;
 
-
     ScrollToBottomObserver(
             RecyclerView recycler ,
             ChatMessageAdapter adapter ,
@@ -24,7 +23,7 @@ public class ScrollToBottomObserver extends AdapterDataObserver{
     @Override
     public void onItemRangeInserted(int positionStart, int itemCount) {
         super.onItemRangeInserted(positionStart, itemCount);
-        int count = adapter.itemcount;
+        int count = adapter.getItemCount();
         int lastVisiblePosition = manager.findLastCompletelyVisibleItemPosition();
         // If the recycler view is initially being loaded or the
         // user is at the bottom of the list, scroll to the bottom

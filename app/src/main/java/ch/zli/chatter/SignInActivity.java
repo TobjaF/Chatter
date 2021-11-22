@@ -9,10 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
-
 import com.google.firebase.auth.FirebaseAuth;
-
 import ch.zli.chatter.databinding.ActivitySignInBinding;
 
 import com.firebase.ui.auth.AuthUI;
@@ -71,7 +68,7 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(
                     this,
                     "There was an error signing in",
-                    Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_LONG).show();
 
             IdpResponse response = result.getIdpResponse();
 
