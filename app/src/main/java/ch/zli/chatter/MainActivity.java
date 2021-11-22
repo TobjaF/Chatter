@@ -1,8 +1,10 @@
-package com.example.chatter;
+package ch.zli.chatter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import ch.zli.chatter.R;
 
 public class MainActivity extends AppCompatActivity {
 

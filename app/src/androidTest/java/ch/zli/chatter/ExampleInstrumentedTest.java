@@ -1,4 +1,4 @@
-package com.example.chatter;
+package ch.zli.chatter;
 
 import android.content.Context;
 
