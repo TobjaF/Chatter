@@ -1,5 +1,11 @@
 package ch.zli.chatter;
-
+/* Disclaimer:
+ * Der Code in diesem .java-File ist entstanden beim befolgen eines offiziellen Firebase-Android Codelab, und gleicht diesem deshalb stark
+ *
+ * Das betreffende Tutorial ist verfügbar unter https://firebase.google.com/codelabs/firebase-android,
+ * der dazugehörige Source-Code ist verfügbar unter https://github.com/firebase/codelab-friendlychat-android
+ *
+ * */
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
