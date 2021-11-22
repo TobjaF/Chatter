@@ -41,6 +41,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
 
+    //Chat-Nachricht: Rundes Profilbild
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     // Firebase UI
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
     implementation 'com.firebaseui:firebase-ui-database:8.0.0'
